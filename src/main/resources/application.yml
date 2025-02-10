@@ -1,0 +1,39 @@
+server:
+  servlet:
+    context-path: /guitarsongs
+
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 15MB
+      max-request-size: 30MB
+      resolve-lazily: true
+      location: ${java.io.tmpdir}
+
+  web:
+    resources:
+      static-locations: classpath:report/
+
+  datasource:
+    url: jdbc:mysql://localhost:9946/guitarlib
+    username: guitarlib
+    password: Wisp2909@6
+  jpa:
+    open-in-view: false
+    database: mysql
+    show-sql: false
+    hibernate:
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+logging:
+  file:
+    name: logs/application.log
+
+guitarapis:
+  file-location: /files/
+  # file-location: D:\OneDrive - BW Info Services LLP\Documents\Guitar\files\
+  audio-path: audio/
+  pdf-path: pdf/

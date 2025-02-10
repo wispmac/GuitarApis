@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'war'
+    id 'org.springframework.boot' version '3.4.2'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.hibernate.orm' version '6.6.5.Final'
+    id 'org.graalvm.buildtools.native' version '0.10.4'
+}
+
+group = 'com.bwinfoservices'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(23)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.18.0'
+    implementation group: 'net.sf.jasperreports', name: 'jasperreports', version: '7.0.1'
+    implementation group: 'net.sf.jasperreports', name: 'jasperreports-fonts', version: '7.0.1'
+    implementation group: 'net.sf.jasperreports', name: 'jasperreports-barbecue', version: '7.0.1'
+    implementation group: 'net.sf.jasperreports', name: 'jasperreports-barcode4j', version: '7.0.1'
+    implementation group: 'net.sf.jasperreports', name: 'jasperreports-pdf', version: '7.0.1'
+    implementation group: 'net.sf.jasperreports', name: 'jasperreports-excel-poi', version: '7.0.1'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly group: 'com.mysql', name: 'mysql-connector-j', version: '9.2.0'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+}

@@ -1,24 +1,24 @@
 package com.bwinfoservices.guitarapis.services;
 
-import com.bwinfoservices.guitarapis.entities.SongsList;
+import com.bwinfoservices.guitarapis.payloads.requests.SaveSongRequest;
 import com.bwinfoservices.guitarapis.payloads.requests.SongNumRange;
-import net.sf.jasperreports.engine.JRException;
+import com.bwinfoservices.guitarapis.payloads.requests.UploadFileRequest;
+import com.bwinfoservices.guitarapis.payloads.responses.*;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 @SuppressWarnings("unused")
 public interface SongsService {
-    List<SongsList> listAll();
+    SongsListResponse listAll();
 
-    SongsList findBySongNum(String songNum);
+    SongsResponse findBySongNum(String songNum);
 
-    void save(SongsList songsList);
+    SaveSongResponse save(SaveSongRequest saveSongRequest);
 
-    byte[] getAudioFile(Integer songId) throws IOException;
+    FileResponse getAudioFile(Integer songId) throws IOException;
 
-    byte[] getPdfFile(Integer songId) throws IOException;
+    FileResponse getPdfFile(Integer songId) throws IOException;
 
     List<String> listAllSongNums();
 
@@ -40,5 +40,9 @@ public interface SongsService {
 
     List<String> listToSongNums(String fromSongNum);
 
-    byte[] getSongsIndex(SongNumRange songNumRange) throws JRException, SQLException, IOException;
+    FileResponse getSongsIndex(SongNumRange songNumRange);
+
+    UploadFileResponse uploadAudioFile(UploadFileRequest uploadFileRequest);
+
+    UploadFileRequest uploadPdfFile(UploadFileRequest uploadFileRequest);
 }

@@ -4,9 +4,7 @@ import com.bwinfoservices.guitarapis.payloads.requests.SaveSongRequest;
 import com.bwinfoservices.guitarapis.payloads.requests.SongNumRange;
 import com.bwinfoservices.guitarapis.payloads.requests.UploadFileRequest;
 import com.bwinfoservices.guitarapis.payloads.responses.*;
-
-import java.io.IOException;
-import java.util.List;
+import com.bwinfoservices.guitarapis.types.MediaType;
 
 @SuppressWarnings("unused")
 public interface SongsService {
@@ -16,33 +14,29 @@ public interface SongsService {
 
     SaveSongResponse save(SaveSongRequest saveSongRequest);
 
-    FileResponse getAudioFile(Integer songId) throws IOException;
+    FileResponse getFile(Integer songId, MediaType mediaType);
 
-    FileResponse getPdfFile(Integer songId) throws IOException;
+    StringListResponse listAllSongNums();
 
-    List<String> listAllSongNums();
+    StringListResponse listAllAlbums();
 
-    List<String> listAllAlbums();
+    StringListResponse listAllArtists();
 
-    List<String> listAllArtists();
+    IntegerListResponse listAllReleaseYears();
 
-    List<Integer> listAllReleaseYears();
+    StringListResponse listAllComposers();
 
-    List<String> listAllComposers();
+    StringListResponse listAllLyricists();
 
-    List<String> listAllLyricists();
+    StringListResponse listAllChords();
 
-    List<String> listAllChords();
+    LastSongNumResponse getLastSongNum();
 
-    String getLastSongNum();
+    ReleaseYearResponse getReleaseYear(String albumName);
 
-    Integer getReleaseYear(String albumName);
-
-    List<String> listToSongNums(String fromSongNum);
+    StringListResponse listToSongNums(String fromSongNum);
 
     FileResponse getSongsIndex(SongNumRange songNumRange);
 
-    UploadFileResponse uploadAudioFile(UploadFileRequest uploadFileRequest);
-
-    UploadFileRequest uploadPdfFile(UploadFileRequest uploadFileRequest);
+    UploadFileResponse uploadFile(UploadFileRequest uploadFileRequest, MediaType mediaType);
 }

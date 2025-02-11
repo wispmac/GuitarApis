@@ -8,6 +8,7 @@ import com.bwinfoservices.guitarapis.payloads.requests.UploadFileRequest;
 import com.bwinfoservices.guitarapis.payloads.responses.*;
 import com.bwinfoservices.guitarapis.repositories.*;
 import com.bwinfoservices.guitarapis.services.SongsService;
+import com.bwinfoservices.guitarapis.types.MediaType;
 import jakarta.transaction.Transactional;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.util.JRLoader;
@@ -189,93 +190,121 @@ public class SongsServiceImpl implements SongsService {
     }
 
     @Override
-    public FileResponse getAudioFile(Integer songId) throws IOException {
-        MusicFiles audioFile = musicFilesRepository.findAudioFile(songId).orElse(null);
+    public FileResponse getFile(Integer songId, MediaType mediaType) {
         FileResponse fileResponse = new FileResponse("Not Found", null, null, null);
 
-        if (audioFile != null) {
-            String filename = filepathConfig.getFileLocation() + filepathConfig.getAudioPath() + audioFile.getFileName();
+        try {
+            MusicFiles musicFile = musicFilesRepository.findAudioFile(songId).orElse(null);
 
+            if (musicFile != null) {
+                String fileName = filepathConfig.getFileLocation() +
+                        (mediaType == MediaType.Audio ? filepathConfig.getAudioPath() : filepathConfig.getPdfPath()) +
+                        musicFile.getFileName();
 
-            setFileResponse(fileResponse, filename, audioFile);
+                File file = new File(fileName);
+
+                if (file.exists() && !file.isDirectory()) {
+                    fileResponse.setFileName(musicFile.getFileName());
+                    fileResponse.setFileSize(musicFile.getFileSize());
+                    fileResponse.setData(Files.readAllBytes(file.toPath()));
+                    fileResponse.setStatus("Success");
+                }
+            }
+        } catch (Exception e) {
+            fileResponse.setStatus("Error: " + e.getMessage());
         }
 
         return fileResponse;
     }
 
     @Override
-    public FileResponse getPdfFile(Integer songId) throws IOException {
-        MusicFiles pdfFile = musicFilesRepository.findPdfFile(songId).orElse(null);
-        FileResponse fileResponse = new FileResponse("Not Found", null, null, null);
-
-        if (pdfFile != null) {
-            String filename = filepathConfig.getFileLocation() + filepathConfig.getPdfPath() + pdfFile.getFileName();
-
-            setFileResponse(fileResponse, filename, pdfFile);
-        }
-
-        return fileResponse;
-    }
-
-    private void setFileResponse(FileResponse fileResponse, String fileName, MusicFiles musicFile) throws IOException {
-        File file = new File(fileName);
-
-        if (file.exists() && !file.isDirectory()) {
-            fileResponse.setFileName(musicFile.getFileName());
-            fileResponse.setFileSize(musicFile.getFileSize());
-            fileResponse.setData(Files.readAllBytes(file.toPath()));
-            fileResponse.setStatus("Success");
+    public StringListResponse listAllSongNums() {
+        try {
+            return new StringListResponse("Success", songsRepository.listAllSongNums());
+        } catch (Exception e) {
+            return new StringListResponse("Error: " + e.getMessage(), null);
         }
     }
 
     @Override
-    public List<String> listAllSongNums() {
-        return songsRepository.listAllSongNums();
+    public StringListResponse listAllAlbums() {
+        try {
+            return new StringListResponse("Success", albumsRepository.listAllAlbums());
+        } catch (Exception e) {
+            return new StringListResponse("Error: " + e.getMessage(), null);
+        }
     }
 
     @Override
-    public List<String> listAllAlbums() {
-        return albumsRepository.listAllAlbums();
+    public StringListResponse listAllArtists() {
+        try {
+            return new StringListResponse("Success", artistsRepository.listAllArtists());
+        } catch (Exception e) {
+            return new StringListResponse("Error: " + e.getMessage(), null);
+        }
     }
 
     @Override
-    public List<String> listAllArtists() {
-        return artistsRepository.listAllArtists();
+    public IntegerListResponse listAllReleaseYears() {
+        try {
+            return new IntegerListResponse("Success", albumsRepository.listAllReleaseYears());
+        } catch (Exception e) {
+            return new IntegerListResponse("Error: " + e.getMessage(), null);
+        }
     }
 
     @Override
-    public List<Integer> listAllReleaseYears() {
-        return albumsRepository.listAllReleaseYears();
+    public StringListResponse listAllComposers() {
+        try {
+            return new StringListResponse("Success", composersRepository.listAllComposers());
+        } catch (Exception e) {
+            return new StringListResponse("Error: " + e.getMessage(), null);
+        }
     }
 
     @Override
-    public List<String> listAllComposers() {
-        return composersRepository.listAllComposers();
+    public StringListResponse listAllLyricists() {
+        try {
+            return new StringListResponse("Success", lyricistsRepository.listAllLyricists());
+        } catch (Exception e) {
+            return new StringListResponse("Error: " + e.getMessage(), null);
+        }
     }
 
     @Override
-    public List<String> listAllLyricists() {
-        return lyricistsRepository.listAllLyricists();
+    public StringListResponse listAllChords() {
+        try {
+            return new StringListResponse("Success", chordsRepository.listAllChords());
+        } catch (Exception e) {
+            return new StringListResponse("Error: " + e.getMessage(), null);
+        }
     }
 
     @Override
-    public List<String> listAllChords() {
-        return chordsRepository.listAllChords();
+    public LastSongNumResponse getLastSongNum() {
+        try {
+            return new LastSongNumResponse("Success", songsRepository.getLastSongNum());
+        } catch (Exception e) {
+            return new LastSongNumResponse("Error: " + e.getMessage(), null);
+        }
     }
 
     @Override
-    public String getLastSongNum() {
-        return songsRepository.getLastSongNum();
+    public ReleaseYearResponse getReleaseYear(String albumName) {
+        try {
+            return new ReleaseYearResponse("Success", albumsRepository.getReleaseYear(albumName));
+        } catch (Exception e) {
+            return new ReleaseYearResponse("Error: " + e.getMessage(), null);
+        }
     }
 
     @Override
-    public Integer getReleaseYear(String albumName) {
-        return albumsRepository.getReleaseYear(albumName);
-    }
-
-    @Override
-    public List<String> listToSongNums(String fromSongNum) {
-        return songsRepository.listToSongNums(fromSongNum);
+    public StringListResponse listToSongNums(String fromSongNum) {
+        try {
+            return new StringListResponse("Success", songsRepository.listToSongNums(fromSongNum));
+        } catch (Exception e) {
+            return new StringListResponse("Error: " + e.getMessage(), null);
+        }
     }
 
     @Override
@@ -313,41 +342,38 @@ public class SongsServiceImpl implements SongsService {
     }
 
     @Override
-    public UploadFileResponse uploadAudioFile(UploadFileRequest uploadFileRequest) {
+    public UploadFileResponse uploadFile(UploadFileRequest uploadFileRequest, MediaType mediaType) {
         UploadFileResponse uploadFileResponse = new UploadFileResponse();
-        MusicFiles audioFile = null;
+        MusicFiles mediaFile = null;
 
         try {
             if (uploadFileRequest.getId() != null && uploadFileRequest.getId() > 0) {
-                audioFile = musicFilesRepository.findById(uploadFileRequest.getId()).orElse(null);
+                mediaFile = musicFilesRepository.findById(uploadFileRequest.getId()).orElse(null);
             }
 
-            if (audioFile == null) {
-                audioFile = new MusicFiles();
+            if (mediaFile == null) {
+                mediaFile = new MusicFiles();
             }
 
-            audioFile.setSongId(uploadFileRequest.getSongId());
-            audioFile.setFileName(uploadFileRequest.getFileName());
-            audioFile.setFileType(uploadFileRequest.getFileType());
-            audioFile.setFileSize((long) uploadFileRequest.getFileData().length);
+            mediaFile.setSongId(uploadFileRequest.getSongId());
+            mediaFile.setFileName(uploadFileRequest.getFileName());
+            mediaFile.setFileType(uploadFileRequest.getFileType());
+            mediaFile.setFileSize((long) uploadFileRequest.getFileData().length);
 
-            String filename = filepathConfig.getFileLocation() + filepathConfig.getAudioPath() + uploadFileRequest.getFileName();
+            String filename = filepathConfig.getFileLocation() +
+                    (mediaType == MediaType.Audio ?  filepathConfig.getAudioPath() : filepathConfig.getPdfPath()) +
+                    uploadFileRequest.getFileName();
             FileUtils.writeByteArrayToFile(new File(filename), uploadFileRequest.getFileData());
 
-            audioFile = musicFilesRepository.saveAndFlush(audioFile);
+            mediaFile = musicFilesRepository.saveAndFlush(mediaFile);
 
             uploadFileResponse.setStatus("Success");
-            uploadFileResponse.setId(audioFile.getId());
+            uploadFileResponse.setId(mediaFile.getId());
         } catch (Exception e) {
             uploadFileResponse.setStatus("Error: " + e.getMessage());
             uploadFileResponse.setId(null);
         }
 
         return uploadFileResponse;
-    }
-
-    @Override
-    public UploadFileRequest uploadPdfFile(UploadFileRequest uploadFileRequest) {
-        return null;
     }
 }

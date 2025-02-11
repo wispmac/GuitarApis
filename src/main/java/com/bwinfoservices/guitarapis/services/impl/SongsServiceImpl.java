@@ -11,6 +11,7 @@ import com.bwinfoservices.guitarapis.services.SongsService;
 import jakarta.transaction.Transactional;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
@@ -313,7 +314,36 @@ public class SongsServiceImpl implements SongsService {
 
     @Override
     public UploadFileResponse uploadAudioFile(UploadFileRequest uploadFileRequest) {
-        return null;
+        UploadFileResponse uploadFileResponse = new UploadFileResponse();
+        MusicFiles audioFile = null;
+
+        try {
+            if (uploadFileRequest.getId() != null && uploadFileRequest.getId() > 0) {
+                audioFile = musicFilesRepository.findById(uploadFileRequest.getId()).orElse(null);
+            }
+
+            if (audioFile == null) {
+                audioFile = new MusicFiles();
+            }
+
+            audioFile.setSongId(uploadFileRequest.getSongId());
+            audioFile.setFileName(uploadFileRequest.getFileName());
+            audioFile.setFileType(uploadFileRequest.getFileType());
+            audioFile.setFileSize((long) uploadFileRequest.getFileData().length);
+
+            String filename = filepathConfig.getFileLocation() + filepathConfig.getAudioPath() + uploadFileRequest.getFileName();
+            FileUtils.writeByteArrayToFile(new File(filename), uploadFileRequest.getFileData());
+
+            audioFile = musicFilesRepository.saveAndFlush(audioFile);
+
+            uploadFileResponse.setStatus("Success");
+            uploadFileResponse.setId(audioFile.getId());
+        } catch (Exception e) {
+            uploadFileResponse.setStatus("Error: " + e.getMessage());
+            uploadFileResponse.setId(null);
+        }
+
+        return uploadFileResponse;
     }
 
     @Override

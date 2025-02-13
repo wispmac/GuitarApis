@@ -1,4 +1,4 @@
-package com.bwinfoservices.guitarapis.types;
+package com.bwinfoservices.guitarapis.defs;
 
 public enum MediaType {
     Audio,

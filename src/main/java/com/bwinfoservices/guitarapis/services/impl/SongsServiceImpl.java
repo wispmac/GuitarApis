@@ -1,6 +1,7 @@
 package com.bwinfoservices.guitarapis.services.impl;
 
 import com.bwinfoservices.guitarapis.config.FilepathConfig;
+import com.bwinfoservices.guitarapis.defs.Constants;
 import com.bwinfoservices.guitarapis.entities.*;
 import com.bwinfoservices.guitarapis.payloads.requests.SaveSongRequest;
 import com.bwinfoservices.guitarapis.payloads.requests.SongNumRange;
@@ -8,7 +9,7 @@ import com.bwinfoservices.guitarapis.payloads.requests.UploadFileRequest;
 import com.bwinfoservices.guitarapis.payloads.responses.*;
 import com.bwinfoservices.guitarapis.repositories.*;
 import com.bwinfoservices.guitarapis.services.SongsService;
-import com.bwinfoservices.guitarapis.types.MediaType;
+import com.bwinfoservices.guitarapis.defs.MediaType;
 import jakarta.transaction.Transactional;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.util.JRLoader;
@@ -70,9 +71,10 @@ public class SongsServiceImpl implements SongsService {
     @Override
     public SongsListResponse listAll() {
         try {
-            return new SongsListResponse("Success", songsListRepository.findAll());
+            List<SongsList> lstSongs = songsListRepository.findAll();
+            return new SongsListResponse(Constants.SUCCESS, lstSongs.size(), lstSongs);
         } catch (Exception e) {
-            return new SongsListResponse(e.getMessage(), null);
+            return new SongsListResponse(e.getMessage(), null, null);
         }
     }
 
@@ -81,9 +83,9 @@ public class SongsServiceImpl implements SongsService {
         SongsList song = songsListRepository.findById_SongNum(songNum).orElse(null);
 
         if (song == null) {
-            return new SongsResponse("Not Found", new SongsList());
+            return new SongsResponse(Constants.NOT_FOUND, new SongsList());
         } else {
-            return new SongsResponse("Success", song);
+            return new SongsResponse(Constants.SUCCESS, song);
         }
     }
 
@@ -170,7 +172,7 @@ public class SongsServiceImpl implements SongsService {
                 chordsUsedRepository.saveAll(lstChords);
             }
 
-            saveSongResponse.setStatus("Success");
+            saveSongResponse.setStatus(Constants.SUCCESS);
             saveSongResponse.setSongId(song.getId());
             saveSongResponse.setAlbumId(album.getId());
             saveSongResponse.setComposerId(composer.getId());
@@ -178,7 +180,7 @@ public class SongsServiceImpl implements SongsService {
             saveSongResponse.setArtistIds(artistIds);
             saveSongResponse.setChordIds(chordIds);
         } catch (Exception ex) {
-            saveSongResponse.setStatus("Error: " + ex.getMessage());
+            saveSongResponse.setStatus(Constants.ERROR + ex.getMessage());
             saveSongResponse.setSongId(null);
             saveSongResponse.setAlbumId(null);
             saveSongResponse.setComposerId(null);
@@ -191,7 +193,7 @@ public class SongsServiceImpl implements SongsService {
 
     @Override
     public FileResponse getFile(Integer songId, MediaType mediaType) {
-        FileResponse fileResponse = new FileResponse("Not Found", null, null, null);
+        FileResponse fileResponse = new FileResponse(Constants.NOT_FOUND, null, null, null);
 
         try {
             MusicFiles musicFile = musicFilesRepository.findAudioFile(songId).orElse(null);
@@ -207,11 +209,11 @@ public class SongsServiceImpl implements SongsService {
                     fileResponse.setFileName(musicFile.getFileName());
                     fileResponse.setFileSize(musicFile.getFileSize());
                     fileResponse.setData(Files.readAllBytes(file.toPath()));
-                    fileResponse.setStatus("Success");
+                    fileResponse.setStatus(Constants.SUCCESS);
                 }
             }
         } catch (Exception e) {
-            fileResponse.setStatus("Error: " + e.getMessage());
+            fileResponse.setStatus(Constants.ERROR + e.getMessage());
         }
 
         return fileResponse;
@@ -220,90 +222,98 @@ public class SongsServiceImpl implements SongsService {
     @Override
     public StringListResponse listAllSongNums() {
         try {
-            return new StringListResponse("Success", songsRepository.listAllSongNums());
+            List<String> lstSongNums = songsRepository.listAllSongNums();
+            return new StringListResponse(Constants.SUCCESS, lstSongNums.size(), lstSongNums);
         } catch (Exception e) {
-            return new StringListResponse("Error: " + e.getMessage(), null);
+            return new StringListResponse(Constants.ERROR + e.getMessage(), null, null);
         }
     }
 
     @Override
     public StringListResponse listAllAlbums() {
         try {
-            return new StringListResponse("Success", albumsRepository.listAllAlbums());
+            List<String> lstAlbums = albumsRepository.listAllAlbums();
+            return new StringListResponse(Constants.SUCCESS, lstAlbums.size(), lstAlbums);
         } catch (Exception e) {
-            return new StringListResponse("Error: " + e.getMessage(), null);
+            return new StringListResponse(Constants.ERROR + e.getMessage(), null, null);
         }
     }
 
     @Override
     public StringListResponse listAllArtists() {
         try {
-            return new StringListResponse("Success", artistsRepository.listAllArtists());
+            List<String> lstArtists = artistsRepository.listAllArtists();
+            return new StringListResponse(Constants.SUCCESS, lstArtists.size(), lstArtists);
         } catch (Exception e) {
-            return new StringListResponse("Error: " + e.getMessage(), null);
+            return new StringListResponse(Constants.ERROR + e.getMessage(), null, null);
         }
     }
 
     @Override
     public IntegerListResponse listAllReleaseYears() {
         try {
-            return new IntegerListResponse("Success", albumsRepository.listAllReleaseYears());
+            List<Integer> lstReleaseYears = albumsRepository.listAllReleaseYears();
+            return new IntegerListResponse(Constants.SUCCESS, lstReleaseYears.size(), lstReleaseYears);
         } catch (Exception e) {
-            return new IntegerListResponse("Error: " + e.getMessage(), null);
+            return new IntegerListResponse(Constants.ERROR + e.getMessage(), null, null);
         }
     }
 
     @Override
     public StringListResponse listAllComposers() {
         try {
-            return new StringListResponse("Success", composersRepository.listAllComposers());
+            List<String> lstComposers = composersRepository.listAllComposers();
+            return new StringListResponse(Constants.SUCCESS, lstComposers.size(), lstComposers);
         } catch (Exception e) {
-            return new StringListResponse("Error: " + e.getMessage(), null);
+            return new StringListResponse(Constants.ERROR + e.getMessage(), null, null);
         }
     }
 
     @Override
     public StringListResponse listAllLyricists() {
         try {
-            return new StringListResponse("Success", lyricistsRepository.listAllLyricists());
+            List<String> lstLyricists = lyricistsRepository.listAllLyricists();
+            return new StringListResponse(Constants.SUCCESS, lstLyricists.size(), lstLyricists);
         } catch (Exception e) {
-            return new StringListResponse("Error: " + e.getMessage(), null);
+            return new StringListResponse(Constants.ERROR + e.getMessage(), null, null);
         }
     }
 
     @Override
     public StringListResponse listAllChords() {
         try {
-            return new StringListResponse("Success", chordsRepository.listAllChords());
+            List<String> lstChords = chordsRepository.listAllChords();
+            return new StringListResponse(Constants.SUCCESS, lstChords.size(), lstChords);
         } catch (Exception e) {
-            return new StringListResponse("Error: " + e.getMessage(), null);
+            return new StringListResponse(Constants.ERROR + e.getMessage(), null, null);
         }
     }
 
     @Override
     public LastSongNumResponse getLastSongNum() {
         try {
-            return new LastSongNumResponse("Success", songsRepository.getLastSongNum());
+            return new LastSongNumResponse(Constants.SUCCESS, songsRepository.getLastSongNum());
         } catch (Exception e) {
-            return new LastSongNumResponse("Error: " + e.getMessage(), null);
+            return new LastSongNumResponse(Constants.ERROR + e.getMessage(), null);
         }
     }
 
     @Override
     public ReleaseYearResponse getReleaseYear(String albumName) {
         try {
-            return new ReleaseYearResponse("Success", albumsRepository.getReleaseYear(albumName));
+            return new ReleaseYearResponse(Constants.SUCCESS, albumsRepository.getReleaseYear(albumName));
         } catch (Exception e) {
-            return new ReleaseYearResponse("Error: " + e.getMessage(), null);
+            return new ReleaseYearResponse(Constants.ERROR + e.getMessage(), null);
         }
     }
 
     @Override
     public StringListResponse listToSongNums(String fromSongNum) {
         try {
-            return new StringListResponse("Success", songsRepository.listToSongNums(fromSongNum));
+            List<String> lstSongNums = songsRepository.listToSongNums(fromSongNum);
+            return new StringListResponse(Constants.SUCCESS, lstSongNums.size(), lstSongNums);
         } catch (Exception e) {
-            return new StringListResponse("Error: " + e.getMessage(), null);
+            return new StringListResponse(Constants.ERROR + e.getMessage(), null, null);
         }
     }
 
@@ -330,9 +340,9 @@ public class SongsServiceImpl implements SongsService {
             fileResponse.setData(pdfBytes);
             fileResponse.setFileName("GuitarIndex.pdf");
             fileResponse.setFileSize((long) pdfBytes.length);
-            fileResponse.setStatus("Success");
+            fileResponse.setStatus(Constants.SUCCESS);
         } catch (JRException | SQLException | IOException e) {
-            fileResponse.setStatus("Error: " + e.getMessage());
+            fileResponse.setStatus(Constants.ERROR + e.getMessage());
             fileResponse.setFileName(null);
             fileResponse.setFileSize(null);
             fileResponse.setData(null);
@@ -367,10 +377,10 @@ public class SongsServiceImpl implements SongsService {
 
             mediaFile = musicFilesRepository.saveAndFlush(mediaFile);
 
-            uploadFileResponse.setStatus("Success");
+            uploadFileResponse.setStatus(Constants.SUCCESS);
             uploadFileResponse.setId(mediaFile.getId());
         } catch (Exception e) {
-            uploadFileResponse.setStatus("Error: " + e.getMessage());
+            uploadFileResponse.setStatus(Constants.ERROR + e.getMessage());
             uploadFileResponse.setId(null);
         }
 
@@ -381,14 +391,14 @@ public class SongsServiceImpl implements SongsService {
     public ResponseMessage delete(String songNum) {
         Optional<Songs> song = songsRepository.findBySongNum(songNum);
 
-        return song.map(songs -> new ResponseMessage(deleteSong(songs))).orElseGet(() -> new ResponseMessage("Not Found"));
+        return song.map(songs -> new ResponseMessage(deleteSong(songs))).orElseGet(() -> new ResponseMessage(Constants.NOT_FOUND));
     }
 
     @Override
     public ResponseMessage delete(Integer songId) {
         Optional<Songs> song = songsRepository.findById(songId);
 
-        return song.map(songs -> new ResponseMessage(deleteSong(songs))).orElseGet(() -> new ResponseMessage("Not Found"));
+        return song.map(songs -> new ResponseMessage(deleteSong(songs))).orElseGet(() -> new ResponseMessage(Constants.NOT_FOUND));
     }
 
     private String deleteSong(Songs song) {
@@ -409,9 +419,9 @@ public class SongsServiceImpl implements SongsService {
             musicFilesRepository.deleteAll(lstFiles);
             songsRepository.delete(song);
 
-            return "Success";
+            return Constants.SUCCESS;
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return Constants.ERROR + e.getMessage();
         }
     }
 }

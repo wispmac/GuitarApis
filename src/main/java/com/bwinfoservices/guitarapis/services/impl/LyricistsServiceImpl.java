@@ -1,5 +1,6 @@
 package com.bwinfoservices.guitarapis.services.impl;
 
+import com.bwinfoservices.guitarapis.defs.Constants;
 import com.bwinfoservices.guitarapis.entities.Lyricists;
 import com.bwinfoservices.guitarapis.payloads.responses.LyricistDetailsResponse;
 import com.bwinfoservices.guitarapis.payloads.responses.LyricistsListResponse;
@@ -10,6 +11,7 @@ import com.bwinfoservices.guitarapis.services.LyricistsService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,9 +26,10 @@ public class LyricistsServiceImpl implements LyricistsService {
     @Override
     public LyricistsListResponse listAll() {
         try {
-            return new LyricistsListResponse("Success", lyricistsRepository.findAll());
+            List<Lyricists> lyricists = lyricistsRepository.findAll();
+            return new LyricistsListResponse(Constants.SUCCESS, lyricists.size(), lyricists);
         } catch (Exception e) {
-            return new LyricistsListResponse("Error: " + e.getMessage(), null);
+            return new LyricistsListResponse(Constants.ERROR + e.getMessage(), null, null);
         }
     }
 
@@ -35,9 +38,9 @@ public class LyricistsServiceImpl implements LyricistsService {
         try {
             Optional<Lyricists> lyricist = lyricistsRepository.findByLyricistName(lyricistName);
 
-            return lyricist.map(l -> new LyricistDetailsResponse("Success", l)).orElseGet(() -> new LyricistDetailsResponse("Not Found", null));
+            return lyricist.map(l -> new LyricistDetailsResponse(Constants.SUCCESS, l)).orElseGet(() -> new LyricistDetailsResponse(Constants.NOT_FOUND, null));
         } catch (Exception e) {
-            return new LyricistDetailsResponse("Error: " + e.getMessage(), null);
+            return new LyricistDetailsResponse(Constants.ERROR + e.getMessage(), null);
         }
     }
 
@@ -46,9 +49,9 @@ public class LyricistsServiceImpl implements LyricistsService {
         try {
             Optional<Lyricists> lyricist = lyricistsRepository.findById(lyricistId);
 
-            return lyricist.map(l -> new LyricistDetailsResponse("Success", l)).orElseGet(() -> new LyricistDetailsResponse("Not Found", null));
+            return lyricist.map(l -> new LyricistDetailsResponse(Constants.SUCCESS, l)).orElseGet(() -> new LyricistDetailsResponse(Constants.NOT_FOUND, null));
         } catch (Exception e) {
-            return new LyricistDetailsResponse("Error: " + e.getMessage(), null);
+            return new LyricistDetailsResponse(Constants.ERROR + e.getMessage(), null);
         }
     }
 
@@ -60,9 +63,9 @@ public class LyricistsServiceImpl implements LyricistsService {
 
             newLyricist = lyricistsRepository.saveAndFlush(newLyricist);
 
-            return new SaveMasterResponse("Success", newLyricist.getId());
+            return new SaveMasterResponse(Constants.SUCCESS, newLyricist.getId());
         } catch (Exception e) {
-            return new SaveMasterResponse("Error: " + e.getMessage(), null);
+            return new SaveMasterResponse(Constants.ERROR + e.getMessage(), null);
         }
     }
 
@@ -73,12 +76,12 @@ public class LyricistsServiceImpl implements LyricistsService {
 
             if (lyricist.isPresent()) {
                 lyricistsRepository.delete(lyricist.get());
-                return new ResponseMessage("Success");
+                return new ResponseMessage(Constants.SUCCESS);
             }
 
-            return new ResponseMessage("Not Found");
+            return new ResponseMessage(Constants.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseMessage("Error: " + e.getMessage());
+            return new ResponseMessage(Constants.ERROR + e.getMessage());
         }
     }
 
@@ -89,12 +92,12 @@ public class LyricistsServiceImpl implements LyricistsService {
 
             if (lyricist.isPresent()) {
                 lyricistsRepository.delete(lyricist.get());
-                return new ResponseMessage("Success");
+                return new ResponseMessage(Constants.SUCCESS);
             }
 
-            return new ResponseMessage("Not Found");
+            return new ResponseMessage(Constants.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseMessage("Error: " + e.getMessage());
+            return new ResponseMessage(Constants.ERROR + e.getMessage());
         }
     }
 }

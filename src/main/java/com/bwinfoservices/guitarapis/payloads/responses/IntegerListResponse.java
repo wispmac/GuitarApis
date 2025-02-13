@@ -12,5 +12,7 @@ import java.util.List;
 public class IntegerListResponse {
     private String status;
 
+    private Integer count;
+
     private List<Integer> lstData;
 }

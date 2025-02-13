@@ -13,5 +13,7 @@ import java.util.List;
 public class ChordsListResponse {
     private String status;
 
+    private Integer count;
+
     private List<ChordsDto> chordsList;
 }

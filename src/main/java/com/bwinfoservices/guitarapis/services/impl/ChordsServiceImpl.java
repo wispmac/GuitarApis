@@ -1,5 +1,6 @@
 package com.bwinfoservices.guitarapis.services.impl;
 
+import com.bwinfoservices.guitarapis.defs.Constants;
 import com.bwinfoservices.guitarapis.dtos.ChordsDto;
 import com.bwinfoservices.guitarapis.entities.*;
 import com.bwinfoservices.guitarapis.payloads.responses.ChordDetailsResponse;
@@ -51,9 +52,9 @@ public class ChordsServiceImpl implements ChordsService {
 
             lstDto.sort(Comparator.comparing(ChordsDto::getChordName));
 
-            return new ChordsListResponse("Success", lstDto);
+            return new ChordsListResponse(Constants.SUCCESS, lstDto.size(), lstDto);
         } catch (Exception e) {
-            return new ChordsListResponse("Error: " + e.getMessage(), null);
+            return new ChordsListResponse(Constants.ERROR + e.getMessage(), null, null);
         }
     }
 
@@ -63,10 +64,10 @@ public class ChordsServiceImpl implements ChordsService {
             Optional<Chords> chord = chordsRepository.findByChordName(chordName);
 
             return chord.map(chords ->
-                    new ChordDetailsResponse("Success", getDetails(chords)))
-                    .orElseGet(() -> new ChordDetailsResponse("Not Found", null));
+                    new ChordDetailsResponse(Constants.SUCCESS, getDetails(chords)))
+                    .orElseGet(() -> new ChordDetailsResponse(Constants.NOT_FOUND, null));
         } catch (Exception e) {
-            return new ChordDetailsResponse("Error: " + e.getMessage(), null);
+            return new ChordDetailsResponse(Constants.ERROR + e.getMessage(), null);
         }
     }
 
@@ -347,13 +348,13 @@ public class ChordsServiceImpl implements ChordsService {
                     List<ChordFormation> lstFormation = chordFormationRepository.findByChordId(chord.get().getId());
                     chordFormationRepository.deleteAll(lstFormation);
                     chordsRepository.deleteById(chord.get().getId());
-                    return new ResponseMessage("Success");
+                    return new ResponseMessage(Constants.SUCCESS);
                 }
             }
 
             return new ResponseMessage("Chord appears to be in use. Cannot delete.");
         } catch (Exception e) {
-            return new ResponseMessage("Error: " + e.getMessage());
+            return new ResponseMessage(Constants.ERROR + e.getMessage());
         }
     }
 
@@ -370,12 +371,12 @@ public class ChordsServiceImpl implements ChordsService {
                     lstRet.add(String.valueOf(fretNum));
                 }
 
-                return new StringListResponse("Success", lstRet);
+                return new StringListResponse(Constants.SUCCESS, lstRet.size(), lstRet);
             } else {
-                return new StringListResponse("Invalid Note", null);
+                return new StringListResponse(Constants.INVALID_NOTE, null, null);
             }
         } catch (Exception e) {
-            return new StringListResponse("Error: " + e.getMessage(), null);
+            return new StringListResponse(Constants.ERROR + e.getMessage(), null, null);
         }
     }
 
@@ -386,9 +387,9 @@ public class ChordsServiceImpl implements ChordsService {
 
             return note.map(notes ->
                     new ResponseMessage(String.format("%06.2f", frequenciesRepository.findFrequency(stringNum, fretNum, notes.getId()) / 100.0)))
-                    .orElseGet(() -> new ResponseMessage("Invalid Note"));
+                    .orElseGet(() -> new ResponseMessage(Constants.INVALID_NOTE));
         } catch (Exception e) {
-            return new ResponseMessage("Error: " + e.getMessage());
+            return new ResponseMessage(Constants.ERROR + e.getMessage());
         }
     }
 }

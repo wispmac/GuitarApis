@@ -13,5 +13,7 @@ import java.util.List;
 public class AlbumsListResponse {
     private String status;
 
+    private Integer count;
+
     private List<Albums> albumsList;
 }

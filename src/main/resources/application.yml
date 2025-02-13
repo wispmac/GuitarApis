@@ -1,6 +1,6 @@
 server:
   servlet:
-    context-path: /guitarsongs
+    context-path: /guitarapis
 
 spring:
   servlet:
@@ -42,7 +42,7 @@ management:
         include: "*"
 
 guitarapis:
-  file-location: /files/
-  # file-location: D:\OneDrive - BW Info Services LLP\Documents\Guitar\files\
+  # file-location: /files/
+  file-location: D:\OneDrive - BW Info Services LLP\Documents\Guitar\files\
   audio-path: audio/
   pdf-path: pdf/

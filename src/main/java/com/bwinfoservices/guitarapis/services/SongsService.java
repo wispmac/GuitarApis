@@ -39,4 +39,8 @@ public interface SongsService {
     FileResponse getSongsIndex(SongNumRange songNumRange);
 
     UploadFileResponse uploadFile(UploadFileRequest uploadFileRequest, MediaType mediaType);
+
+    ResponseMessage delete(String songNum);
+
+    ResponseMessage delete(Integer songId);
 }

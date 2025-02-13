@@ -376,4 +376,42 @@ public class SongsServiceImpl implements SongsService {
 
         return uploadFileResponse;
     }
+
+    @Override
+    public ResponseMessage delete(String songNum) {
+        Optional<Songs> song = songsRepository.findBySongNum(songNum);
+
+        return song.map(songs -> new ResponseMessage(deleteSong(songs))).orElseGet(() -> new ResponseMessage("Not Found"));
+    }
+
+    @Override
+    public ResponseMessage delete(Integer songId) {
+        Optional<Songs> song = songsRepository.findById(songId);
+
+        return song.map(songs -> new ResponseMessage(deleteSong(songs))).orElseGet(() -> new ResponseMessage("Not Found"));
+    }
+
+    private String deleteSong(Songs song) {
+        try {
+            List<MusicFiles> lstFiles = musicFilesRepository.findBySongId(song.getId());
+
+            for (MusicFiles musicFile : lstFiles) {
+                try {
+                    String filename = filepathConfig.getFileLocation() +
+                            (musicFile.getFileType().equals("application/pdf") ? filepathConfig.getPdfPath() : filepathConfig.getAudioPath()) +
+                            musicFile.getFileName();
+                    FileUtils.delete(new File(filename));
+                } catch (Exception ignored) {
+                    //
+                }
+            }
+
+            musicFilesRepository.deleteAll(lstFiles);
+            songsRepository.delete(song);
+
+            return "Success";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
 }

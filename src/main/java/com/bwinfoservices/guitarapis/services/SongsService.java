@@ -4,7 +4,7 @@ import com.bwinfoservices.guitarapis.payloads.requests.SaveSongRequest;
 import com.bwinfoservices.guitarapis.payloads.requests.SongNumRange;
 import com.bwinfoservices.guitarapis.payloads.requests.UploadFileRequest;
 import com.bwinfoservices.guitarapis.payloads.responses.*;
-import com.bwinfoservices.guitarapis.defs.MediaType;
+import com.bwinfoservices.guitarapis.commons.MediaType;
 
 @SuppressWarnings("unused")
 public interface SongsService {

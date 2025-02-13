@@ -1,4 +1,4 @@
-package com.bwinfoservices.guitarapis.defs;
+package com.bwinfoservices.guitarapis.commons;
 
 public class Constants {
     public static final String SUCCESS = "Success";

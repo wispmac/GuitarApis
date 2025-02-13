@@ -1,6 +1,6 @@
 package com.bwinfoservices.guitarapis.services.impl;
 
-import com.bwinfoservices.guitarapis.defs.Constants;
+import com.bwinfoservices.guitarapis.commons.Constants;
 import com.bwinfoservices.guitarapis.entities.Composers;
 import com.bwinfoservices.guitarapis.payloads.responses.ComposerDetailsResponse;
 import com.bwinfoservices.guitarapis.payloads.responses.ComposerListResponse;

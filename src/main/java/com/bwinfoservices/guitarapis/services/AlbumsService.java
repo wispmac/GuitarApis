@@ -6,7 +6,6 @@ import com.bwinfoservices.guitarapis.payloads.responses.AlbumsListResponse;
 import com.bwinfoservices.guitarapis.payloads.responses.ResponseMessage;
 import com.bwinfoservices.guitarapis.payloads.responses.SaveMasterResponse;
 
-@SuppressWarnings("unused")
 public interface AlbumsService {
     AlbumsListResponse listAll();
 

@@ -1,6 +1,6 @@
 package com.bwinfoservices.guitarapis.services.impl;
 
-import com.bwinfoservices.guitarapis.defs.Constants;
+import com.bwinfoservices.guitarapis.commons.Constants;
 import com.bwinfoservices.guitarapis.dtos.ChordsDto;
 import com.bwinfoservices.guitarapis.entities.*;
 import com.bwinfoservices.guitarapis.payloads.responses.ChordDetailsResponse;

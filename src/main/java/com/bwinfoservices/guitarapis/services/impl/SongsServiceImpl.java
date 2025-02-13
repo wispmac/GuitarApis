@@ -1,7 +1,7 @@
 package com.bwinfoservices.guitarapis.services.impl;
 
 import com.bwinfoservices.guitarapis.config.FilepathConfig;
-import com.bwinfoservices.guitarapis.defs.Constants;
+import com.bwinfoservices.guitarapis.commons.Constants;
 import com.bwinfoservices.guitarapis.entities.*;
 import com.bwinfoservices.guitarapis.payloads.requests.SaveSongRequest;
 import com.bwinfoservices.guitarapis.payloads.requests.SongNumRange;
@@ -9,7 +9,7 @@ import com.bwinfoservices.guitarapis.payloads.requests.UploadFileRequest;
 import com.bwinfoservices.guitarapis.payloads.responses.*;
 import com.bwinfoservices.guitarapis.repositories.*;
 import com.bwinfoservices.guitarapis.services.SongsService;
-import com.bwinfoservices.guitarapis.defs.MediaType;
+import com.bwinfoservices.guitarapis.commons.MediaType;
 import jakarta.transaction.Transactional;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.util.JRLoader;

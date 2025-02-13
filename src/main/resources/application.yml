@@ -32,6 +32,15 @@ logging:
   file:
     name: logs/application.log
 
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
 guitarapis:
   file-location: /files/
   # file-location: D:\OneDrive - BW Info Services LLP\Documents\Guitar\files\

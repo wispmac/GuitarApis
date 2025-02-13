@@ -9,5 +9,6 @@ import lombok.*;
 @ToString
 public class UploadFileResponse {
     private String status;
+
     private Integer id;
 }

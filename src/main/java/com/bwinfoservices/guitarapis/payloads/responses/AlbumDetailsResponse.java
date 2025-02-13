@@ -1,14 +1,15 @@
 package com.bwinfoservices.guitarapis.payloads.responses;
 
+import com.bwinfoservices.guitarapis.entities.Albums;
 import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class LastSongNumResponse {
+public class AlbumDetailsResponse {
     private String status;
 
-    private String lastSongNum;
+    private Albums albumDetails;
 }

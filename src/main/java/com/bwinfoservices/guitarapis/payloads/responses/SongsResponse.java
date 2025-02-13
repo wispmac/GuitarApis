@@ -10,5 +10,6 @@ import lombok.*;
 @ToString
 public class SongsResponse {
     private String status;
+
     private SongsList songsList;
 }

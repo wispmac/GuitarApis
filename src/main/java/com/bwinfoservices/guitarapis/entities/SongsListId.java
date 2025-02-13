@@ -2,10 +2,7 @@ package com.bwinfoservices.guitarapis.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import java.io.Serializable;
@@ -13,13 +10,14 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 @Embeddable
 public class SongsListId implements Serializable {
-    @NotNull
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(max = 255)
     @Column(name = "songNum")
     private String songNum;
 

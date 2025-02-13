@@ -1,17 +1,13 @@
 package com.bwinfoservices.guitarapis.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.Objects;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "chordsUsed")
 public class ChordsUsed {
@@ -25,26 +21,4 @@ public class ChordsUsed {
 
     @Column(name = "chordId")
     private Integer chordId;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChordsUsed that = (ChordsUsed) o;
-        return Objects.equals(songId, that.songId) && Objects.equals(chordId, that.chordId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(songId, chordId);
-    }
-
-    @Override
-    public String toString() {
-        return "ChordsUsed{" +
-                "id=" + id +
-                ", songId=" + songId +
-                ", chordId=" + chordId +
-                '}';
-    }
 }

@@ -1,17 +1,13 @@
 package com.bwinfoservices.guitarapis.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.Objects;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "frequencies")
 public class Frequencies {
@@ -31,28 +27,4 @@ public class Frequencies {
 
     @Column(name = "frequency")
     private Integer frequency;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Frequencies that = (Frequencies) o;
-        return Objects.equals(stringNum, that.stringNum) && Objects.equals(fretNum, that.fretNum) && Objects.equals(noteId, that.noteId) && Objects.equals(frequency, that.frequency);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(stringNum, fretNum, noteId, frequency);
-    }
-
-    @Override
-    public String toString() {
-        return "Frequencies{" +
-                "id=" + id +
-                ", stringNum=" + stringNum +
-                ", fretNum=" + fretNum +
-                ", noteId=" + noteId +
-                ", frequency=" + frequency +
-                '}';
-    }
 }

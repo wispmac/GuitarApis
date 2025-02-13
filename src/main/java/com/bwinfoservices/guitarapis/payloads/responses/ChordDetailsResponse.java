@@ -10,5 +10,6 @@ import lombok.*;
 @ToString
 public class ChordDetailsResponse {
     private String status;
+
     private ChordsDto chordDetails;
 }

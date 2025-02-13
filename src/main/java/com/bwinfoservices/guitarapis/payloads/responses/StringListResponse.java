@@ -11,5 +11,6 @@ import java.util.List;
 @ToString
 public class StringListResponse {
     private String status;
+
     private List<String> lstData;
 }

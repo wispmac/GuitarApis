@@ -4,11 +4,10 @@ import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class LastSongNumResponse {
+public class SaveMasterResponse {
     private String status;
-
-    private String lastSongNum;
+    private Integer id;
 }

@@ -12,5 +12,6 @@ import java.util.List;
 @ToString
 public class ChordsListResponse {
     private String status;
+
     private List<ChordsDto> chordsList;
 }

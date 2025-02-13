@@ -11,5 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SongNumRange {
     private String songNumFrom;
+
     private String songNumTo;
 }

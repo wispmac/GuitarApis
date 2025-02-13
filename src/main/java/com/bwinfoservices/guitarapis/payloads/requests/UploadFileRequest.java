@@ -9,8 +9,12 @@ import lombok.*;
 @ToString
 public class UploadFileRequest {
     private Integer id;
+
     private Integer songId;
+
     private String fileName;
+
     private String fileType;
+
     private byte[] fileData;
 }

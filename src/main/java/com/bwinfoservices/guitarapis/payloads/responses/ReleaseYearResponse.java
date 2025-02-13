@@ -9,5 +9,6 @@ import lombok.*;
 @ToString
 public class ReleaseYearResponse {
     private String status;
+
     private Integer releaseYear;
 }

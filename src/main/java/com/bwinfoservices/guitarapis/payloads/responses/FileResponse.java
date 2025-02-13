@@ -9,7 +9,10 @@ import lombok.*;
 @ToString
 public class FileResponse {
     private String status;
+
     private String fileName;
+
     private Long fileSize;
+
     private byte[] data;
 }

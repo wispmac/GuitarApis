@@ -1,17 +1,17 @@
 package com.bwinfoservices.guitarapis.payloads.responses;
 
-import com.bwinfoservices.guitarapis.entities.SongsList;
+import com.bwinfoservices.guitarapis.entities.Composers;
 import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class SongsListResponse {
+public class ComposerListResponse {
     private String status;
 
-    private List<SongsList> lstSongs;
+    private List<Composers> composerList;
 }

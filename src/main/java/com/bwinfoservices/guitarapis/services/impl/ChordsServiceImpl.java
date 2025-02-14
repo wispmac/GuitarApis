@@ -3,10 +3,7 @@ package com.bwinfoservices.guitarapis.services.impl;
 import com.bwinfoservices.guitarapis.commons.Constants;
 import com.bwinfoservices.guitarapis.dtos.ChordsDto;
 import com.bwinfoservices.guitarapis.entities.*;
-import com.bwinfoservices.guitarapis.payloads.responses.ChordDetailsResponse;
-import com.bwinfoservices.guitarapis.payloads.responses.ChordsListResponse;
-import com.bwinfoservices.guitarapis.payloads.responses.ResponseMessage;
-import com.bwinfoservices.guitarapis.payloads.responses.StringListResponse;
+import com.bwinfoservices.guitarapis.payloads.responses.*;
 import com.bwinfoservices.guitarapis.repositories.*;
 import com.bwinfoservices.guitarapis.services.ChordsService;
 import jakarta.transaction.Transactional;
@@ -55,6 +52,19 @@ public class ChordsServiceImpl implements ChordsService {
             return new ChordsListResponse(Constants.SUCCESS, lstDto.size(), lstDto);
         } catch (Exception e) {
             return new ChordsListResponse(Constants.ERROR + e.getMessage(), null, null);
+        }
+    }
+
+    @Override
+    public ChordDetailsResponse getChordDetails(Integer chordId) {
+        try {
+            Optional<Chords> chord = chordsRepository.findById(chordId);
+
+            return chord.map(chords ->
+                            new ChordDetailsResponse(Constants.SUCCESS, getDetails(chords)))
+                    .orElseGet(() -> new ChordDetailsResponse(Constants.NOT_FOUND, null));
+        } catch (Exception e) {
+            return new ChordDetailsResponse(Constants.ERROR + e.getMessage(), null);
         }
     }
 
@@ -160,179 +170,201 @@ public class ChordsServiceImpl implements ChordsService {
     }
 
     @Override
-    public void save(ChordsDto chordDetails) {
-        Chords chord = chordsRepository.findByChordName(chordDetails.getChordName()).orElseGet(Chords::new);
-        chord.setChordName(chordDetails.getChordName());
+    public ResponseMessage save(ChordsDto chordDetails) {
+        try {
+            Chords chord = chordsRepository.findByChordName(chordDetails.getChordName()).orElseGet(Chords::new);
+            chord.setChordName(chordDetails.getChordName());
 
-        chord = chordsRepository.saveAndFlush(chord);
+            chord = chordsRepository.saveAndFlush(chord);
 
-        List<ChordFormation> lstFormations = chordFormationRepository.findByChordId(chord.getId());
+            List<ChordFormation> lstFormations = chordFormationRepository.findByChordId(chord.getId());
 
-        if (!lstFormations.isEmpty()) {
-            chordFormationRepository.deleteAll(lstFormations);
-            chordFormationRepository.flush();
-        }
-
-        if (!chordDetails.getNote1().isEmpty()) {
-            ChordFormation cf = new ChordFormation();
-            cf.setChordId(chord.getId());
-            Notes note = notesRepository.findByNoteName(chordDetails.getNote1()).orElseGet(Notes::new);
-            cf.setNoteId(note.getId());
-            cf.setStringNum(Integer.valueOf(chordDetails.getString1()));
-            cf.setFretNum(Integer.valueOf(chordDetails.getFret1()));
-            switch (chordDetails.getFinger1()) {
-                case "T":
-                    cf.setFingerNum(0);
-                    break;
-                case "I":
-                    cf.setFingerNum(1);
-                    break;
-                case "M":
-                    cf.setFingerNum(2);
-                    break;
-                case "R":
-                    cf.setFingerNum(3);
-                    break;
-                case "L":
-                    cf.setFingerNum(4);
-                    break;
+            if (!lstFormations.isEmpty()) {
+                chordFormationRepository.deleteAll(lstFormations);
+                chordFormationRepository.flush();
             }
-            chordFormationRepository.save(cf);
-        }
 
-        if (!chordDetails.getNote2().isEmpty()) {
-            ChordFormation cf = new ChordFormation();
-            cf.setChordId(chord.getId());
-            Notes note = notesRepository.findByNoteName(chordDetails.getNote2()).orElseGet(Notes::new);
-            cf.setNoteId(note.getId());
-            cf.setStringNum(Integer.valueOf(chordDetails.getString2()));
-            cf.setFretNum(Integer.valueOf(chordDetails.getFret2()));
-            switch (chordDetails.getFinger2()) {
-                case "T":
-                    cf.setFingerNum(0);
-                    break;
-                case "I":
-                    cf.setFingerNum(1);
-                    break;
-                case "M":
-                    cf.setFingerNum(2);
-                    break;
-                case "R":
-                    cf.setFingerNum(3);
-                    break;
-                case "L":
-                    cf.setFingerNum(4);
-                    break;
+            if (!chordDetails.getNote1().isEmpty()) {
+                ChordFormation cf = new ChordFormation();
+                cf.setChordId(chord.getId());
+                Notes note = notesRepository.findByNoteName(chordDetails.getNote1()).orElseGet(Notes::new);
+                cf.setNoteId(note.getId());
+                cf.setStringNum(Integer.valueOf(chordDetails.getString1()));
+                cf.setFretNum(Integer.valueOf(chordDetails.getFret1()));
+                switch (chordDetails.getFinger1()) {
+                    case "T":
+                        cf.setFingerNum(0);
+                        break;
+                    case "I":
+                        cf.setFingerNum(1);
+                        break;
+                    case "M":
+                        cf.setFingerNum(2);
+                        break;
+                    case "R":
+                        cf.setFingerNum(3);
+                        break;
+                    case "L":
+                        cf.setFingerNum(4);
+                        break;
+                }
+                chordFormationRepository.save(cf);
             }
-            chordFormationRepository.save(cf);
-        }
 
-        if (!chordDetails.getNote3().isEmpty()) {
-            ChordFormation cf = new ChordFormation();
-            cf.setChordId(chord.getId());
-            Notes note = notesRepository.findByNoteName(chordDetails.getNote3()).orElseGet(Notes::new);
-            cf.setNoteId(note.getId());
-            cf.setStringNum(Integer.valueOf(chordDetails.getString3()));
-            cf.setFretNum(Integer.valueOf(chordDetails.getFret3()));
-            switch (chordDetails.getFinger3()) {
-                case "T":
-                    cf.setFingerNum(0);
-                    break;
-                case "I":
-                    cf.setFingerNum(1);
-                    break;
-                case "M":
-                    cf.setFingerNum(2);
-                    break;
-                case "R":
-                    cf.setFingerNum(3);
-                    break;
-                case "L":
-                    cf.setFingerNum(4);
-                    break;
+            if (!chordDetails.getNote2().isEmpty()) {
+                ChordFormation cf = new ChordFormation();
+                cf.setChordId(chord.getId());
+                Notes note = notesRepository.findByNoteName(chordDetails.getNote2()).orElseGet(Notes::new);
+                cf.setNoteId(note.getId());
+                cf.setStringNum(Integer.valueOf(chordDetails.getString2()));
+                cf.setFretNum(Integer.valueOf(chordDetails.getFret2()));
+                switch (chordDetails.getFinger2()) {
+                    case "T":
+                        cf.setFingerNum(0);
+                        break;
+                    case "I":
+                        cf.setFingerNum(1);
+                        break;
+                    case "M":
+                        cf.setFingerNum(2);
+                        break;
+                    case "R":
+                        cf.setFingerNum(3);
+                        break;
+                    case "L":
+                        cf.setFingerNum(4);
+                        break;
+                }
+                chordFormationRepository.save(cf);
             }
-            chordFormationRepository.save(cf);
-        }
 
-        if (!chordDetails.getNote4().isEmpty()) {
-            ChordFormation cf = new ChordFormation();
-            cf.setChordId(chord.getId());
-            Notes note = notesRepository.findByNoteName(chordDetails.getNote4()).orElseGet(Notes::new);
-            cf.setNoteId(note.getId());
-            cf.setStringNum(Integer.valueOf(chordDetails.getString4()));
-            cf.setFretNum(Integer.valueOf(chordDetails.getFret4()));
-            switch (chordDetails.getFinger4()) {
-                case "T":
-                    cf.setFingerNum(0);
-                    break;
-                case "I":
-                    cf.setFingerNum(1);
-                    break;
-                case "M":
-                    cf.setFingerNum(2);
-                    break;
-                case "R":
-                    cf.setFingerNum(3);
-                    break;
-                case "L":
-                    cf.setFingerNum(4);
-                    break;
+            if (!chordDetails.getNote3().isEmpty()) {
+                ChordFormation cf = new ChordFormation();
+                cf.setChordId(chord.getId());
+                Notes note = notesRepository.findByNoteName(chordDetails.getNote3()).orElseGet(Notes::new);
+                cf.setNoteId(note.getId());
+                cf.setStringNum(Integer.valueOf(chordDetails.getString3()));
+                cf.setFretNum(Integer.valueOf(chordDetails.getFret3()));
+                switch (chordDetails.getFinger3()) {
+                    case "T":
+                        cf.setFingerNum(0);
+                        break;
+                    case "I":
+                        cf.setFingerNum(1);
+                        break;
+                    case "M":
+                        cf.setFingerNum(2);
+                        break;
+                    case "R":
+                        cf.setFingerNum(3);
+                        break;
+                    case "L":
+                        cf.setFingerNum(4);
+                        break;
+                }
+                chordFormationRepository.save(cf);
             }
-            chordFormationRepository.save(cf);
-        }
 
-        if (!chordDetails.getNote5().isEmpty()) {
-            ChordFormation cf = new ChordFormation();
-            cf.setChordId(chord.getId());
-            Notes note = notesRepository.findByNoteName(chordDetails.getNote5()).orElseGet(Notes::new);
-            cf.setNoteId(note.getId());
-            cf.setStringNum(Integer.valueOf(chordDetails.getString5()));
-            cf.setFretNum(Integer.valueOf(chordDetails.getFret5()));
-            switch (chordDetails.getFinger5()) {
-                case "T":
-                    cf.setFingerNum(0);
-                    break;
-                case "I":
-                    cf.setFingerNum(1);
-                    break;
-                case "M":
-                    cf.setFingerNum(2);
-                    break;
-                case "R":
-                    cf.setFingerNum(3);
-                    break;
-                case "L":
-                    cf.setFingerNum(4);
-                    break;
+            if (!chordDetails.getNote4().isEmpty()) {
+                ChordFormation cf = new ChordFormation();
+                cf.setChordId(chord.getId());
+                Notes note = notesRepository.findByNoteName(chordDetails.getNote4()).orElseGet(Notes::new);
+                cf.setNoteId(note.getId());
+                cf.setStringNum(Integer.valueOf(chordDetails.getString4()));
+                cf.setFretNum(Integer.valueOf(chordDetails.getFret4()));
+                switch (chordDetails.getFinger4()) {
+                    case "T":
+                        cf.setFingerNum(0);
+                        break;
+                    case "I":
+                        cf.setFingerNum(1);
+                        break;
+                    case "M":
+                        cf.setFingerNum(2);
+                        break;
+                    case "R":
+                        cf.setFingerNum(3);
+                        break;
+                    case "L":
+                        cf.setFingerNum(4);
+                        break;
+                }
+                chordFormationRepository.save(cf);
             }
-            chordFormationRepository.save(cf);
-        }
 
-        if (!chordDetails.getNote6().isEmpty()) {
-            ChordFormation cf = new ChordFormation();
-            cf.setChordId(chord.getId());
-            Notes note = notesRepository.findByNoteName(chordDetails.getNote6()).orElseGet(Notes::new);
-            cf.setNoteId(note.getId());
-            cf.setStringNum(Integer.valueOf(chordDetails.getString6()));
-            cf.setFretNum(Integer.valueOf(chordDetails.getFret6()));
-            switch (chordDetails.getFinger6()) {
-                case "T":
-                    cf.setFingerNum(0);
-                    break;
-                case "I":
-                    cf.setFingerNum(1);
-                    break;
-                case "M":
-                    cf.setFingerNum(2);
-                    break;
-                case "R":
-                    cf.setFingerNum(3);
-                    break;
-                case "L":
-                    cf.setFingerNum(4);
-                    break;
+            if (!chordDetails.getNote5().isEmpty()) {
+                ChordFormation cf = new ChordFormation();
+                cf.setChordId(chord.getId());
+                Notes note = notesRepository.findByNoteName(chordDetails.getNote5()).orElseGet(Notes::new);
+                cf.setNoteId(note.getId());
+                cf.setStringNum(Integer.valueOf(chordDetails.getString5()));
+                cf.setFretNum(Integer.valueOf(chordDetails.getFret5()));
+                switch (chordDetails.getFinger5()) {
+                    case "T":
+                        cf.setFingerNum(0);
+                        break;
+                    case "I":
+                        cf.setFingerNum(1);
+                        break;
+                    case "M":
+                        cf.setFingerNum(2);
+                        break;
+                    case "R":
+                        cf.setFingerNum(3);
+                        break;
+                    case "L":
+                        cf.setFingerNum(4);
+                        break;
+                }
+                chordFormationRepository.save(cf);
             }
-            chordFormationRepository.save(cf);
+
+            if (!chordDetails.getNote6().isEmpty()) {
+                ChordFormation cf = new ChordFormation();
+                cf.setChordId(chord.getId());
+                Notes note = notesRepository.findByNoteName(chordDetails.getNote6()).orElseGet(Notes::new);
+                cf.setNoteId(note.getId());
+                cf.setStringNum(Integer.valueOf(chordDetails.getString6()));
+                cf.setFretNum(Integer.valueOf(chordDetails.getFret6()));
+                switch (chordDetails.getFinger6()) {
+                    case "T":
+                        cf.setFingerNum(0);
+                        break;
+                    case "I":
+                        cf.setFingerNum(1);
+                        break;
+                    case "M":
+                        cf.setFingerNum(2);
+                        break;
+                    case "R":
+                        cf.setFingerNum(3);
+                        break;
+                    case "L":
+                        cf.setFingerNum(4);
+                        break;
+                }
+                chordFormationRepository.save(cf);
+            }
+
+            return new ResponseMessage(Constants.SUCCESS);
+        } catch (Exception e) {
+            return new ResponseMessage(Constants.ERROR + e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseMessage delete(Integer chordId) {
+        try {
+            Optional<Chords> chord = chordsRepository.findById(chordId);
+
+            if (chord.isPresent()) {
+                delete(chord.get());
+                return new ResponseMessage(Constants.SUCCESS);
+            }
+
+            return new ResponseMessage("Chord appears to be in use. Cannot delete.");
+        } catch (Exception e) {
+            return new ResponseMessage(Constants.ERROR + e.getMessage());
         }
     }
 
@@ -342,19 +374,23 @@ public class ChordsServiceImpl implements ChordsService {
             Optional<Chords> chord = chordsRepository.findByChordName(chordName);
 
             if (chord.isPresent()) {
-                List<ChordsUsed> lstUsed = chordsUsedRepository.findByChordId(chord.get().getId());
-
-                if (lstUsed.isEmpty()) {
-                    List<ChordFormation> lstFormation = chordFormationRepository.findByChordId(chord.get().getId());
-                    chordFormationRepository.deleteAll(lstFormation);
-                    chordsRepository.deleteById(chord.get().getId());
-                    return new ResponseMessage(Constants.SUCCESS);
-                }
+                delete(chord.get());
+                return new ResponseMessage(Constants.SUCCESS);
             }
 
             return new ResponseMessage("Chord appears to be in use. Cannot delete.");
         } catch (Exception e) {
             return new ResponseMessage(Constants.ERROR + e.getMessage());
+        }
+    }
+
+    private void delete(Chords chord) {
+        List<ChordsUsed> lstUsed = chordsUsedRepository.findByChordId(chord.getId());
+
+        if (lstUsed.isEmpty()) {
+            List<ChordFormation> lstFormation = chordFormationRepository.findByChordId(chord.getId());
+            chordFormationRepository.deleteAll(lstFormation);
+            chordsRepository.deleteById(chord.getId());
         }
     }
 
@@ -381,15 +417,15 @@ public class ChordsServiceImpl implements ChordsService {
     }
 
     @Override
-    public ResponseMessage findFrequency(Integer stringNum, Integer fretNum, String noteName) {
+    public FrequencyResponse findFrequency(Integer stringNum, Integer fretNum, String noteName) {
         try {
             Optional<Notes> note = notesRepository.findByNoteName(noteName);
 
             return note.map(notes ->
-                    new ResponseMessage(String.format("%06.2f", frequenciesRepository.findFrequency(stringNum, fretNum, notes.getId()) / 100.0)))
-                    .orElseGet(() -> new ResponseMessage(Constants.INVALID_NOTE));
+                    new FrequencyResponse(Constants.SUCCESS, String.format("%06.2f", frequenciesRepository.findFrequency(stringNum, fretNum, notes.getId()) / 100.0)))
+                    .orElseGet(() -> new FrequencyResponse(Constants.INVALID_NOTE, null));
         } catch (Exception e) {
-            return new ResponseMessage(Constants.ERROR + e.getMessage());
+            return new FrequencyResponse(Constants.ERROR + e.getMessage(), null);
         }
     }
 }

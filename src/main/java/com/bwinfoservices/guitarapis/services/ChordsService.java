@@ -1,22 +1,23 @@
 package com.bwinfoservices.guitarapis.services;
 
 import com.bwinfoservices.guitarapis.dtos.ChordsDto;
-import com.bwinfoservices.guitarapis.payloads.responses.ChordDetailsResponse;
-import com.bwinfoservices.guitarapis.payloads.responses.ChordsListResponse;
-import com.bwinfoservices.guitarapis.payloads.responses.ResponseMessage;
-import com.bwinfoservices.guitarapis.payloads.responses.StringListResponse;
+import com.bwinfoservices.guitarapis.payloads.responses.*;
 
 @SuppressWarnings("unused")
 public interface ChordsService {
     ChordsListResponse listAll();
 
+    ChordDetailsResponse getChordDetails(Integer chordId);
+
     ChordDetailsResponse getChordDetails(String chordName);
 
-    void save(ChordsDto chordDetails);
+    ResponseMessage save(ChordsDto chordDetails);
+
+    ResponseMessage delete(Integer chordId);
 
     ResponseMessage delete(String chordName);
 
     StringListResponse findFrets(String noteName, Integer stringNum);
 
-    ResponseMessage findFrequency(Integer stringNum, Integer fretNum, String noteName);
+    FrequencyResponse findFrequency(Integer stringNum, Integer fretNum, String noteName);
 }

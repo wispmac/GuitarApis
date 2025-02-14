@@ -2,13 +2,13 @@ package com.bwinfoservices.guitarapis.services;
 
 import com.bwinfoservices.guitarapis.entities.Composers;
 import com.bwinfoservices.guitarapis.payloads.responses.ComposerDetailsResponse;
-import com.bwinfoservices.guitarapis.payloads.responses.ComposerListResponse;
+import com.bwinfoservices.guitarapis.payloads.responses.ComposersListResponse;
 import com.bwinfoservices.guitarapis.payloads.responses.ResponseMessage;
 import com.bwinfoservices.guitarapis.payloads.responses.SaveMasterResponse;
 
 @SuppressWarnings("unused")
 public interface ComposersService {
-    ComposerListResponse listAll();
+    ComposersListResponse listAll();
 
     ComposerDetailsResponse find(String composerName);
 

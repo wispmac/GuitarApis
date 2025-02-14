@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ComposerListResponse {
+public class ComposersListResponse {
     private String status;
 
     private Integer count;

@@ -3,7 +3,7 @@ package com.bwinfoservices.guitarapis.services.impl;
 import com.bwinfoservices.guitarapis.commons.Constants;
 import com.bwinfoservices.guitarapis.entities.Composers;
 import com.bwinfoservices.guitarapis.payloads.responses.ComposerDetailsResponse;
-import com.bwinfoservices.guitarapis.payloads.responses.ComposerListResponse;
+import com.bwinfoservices.guitarapis.payloads.responses.ComposersListResponse;
 import com.bwinfoservices.guitarapis.payloads.responses.ResponseMessage;
 import com.bwinfoservices.guitarapis.payloads.responses.SaveMasterResponse;
 import com.bwinfoservices.guitarapis.repositories.ComposersRepository;
@@ -24,12 +24,12 @@ public class ComposersServiceImpl implements ComposersService {
     }
 
     @Override
-    public ComposerListResponse listAll() {
+    public ComposersListResponse listAll() {
         try {
             List<Composers> composers = composersRepository.findAll();
-            return new ComposerListResponse(Constants.SUCCESS, composers.size(), composers);
+            return new ComposersListResponse(Constants.SUCCESS, composers.size(), composers);
         } catch (Exception e) {
-            return new ComposerListResponse(Constants.ERROR + e.getMessage(), null, null);
+            return new ComposersListResponse(Constants.ERROR + e.getMessage(), null, null);
         }
     }
 

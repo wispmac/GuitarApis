@@ -4,7 +4,6 @@ import com.bwinfoservices.guitarapis.config.FilepathConfig;
 import com.bwinfoservices.guitarapis.commons.Constants;
 import com.bwinfoservices.guitarapis.entities.*;
 import com.bwinfoservices.guitarapis.payloads.requests.SaveSongRequest;
-import com.bwinfoservices.guitarapis.payloads.requests.SongNumRange;
 import com.bwinfoservices.guitarapis.payloads.requests.UploadFileRequest;
 import com.bwinfoservices.guitarapis.payloads.responses.*;
 import com.bwinfoservices.guitarapis.repositories.*;
@@ -75,6 +74,17 @@ public class SongsServiceImpl implements SongsService {
             return new SongsListResponse(Constants.SUCCESS, lstSongs.size(), lstSongs);
         } catch (Exception e) {
             return new SongsListResponse(e.getMessage(), null, null);
+        }
+    }
+
+    @Override
+    public SongsResponse findBySongId(Integer songId) {
+        SongsList song = songsListRepository.findById_Id(songId).orElse(null);
+
+        if (song == null) {
+            return new SongsResponse(Constants.NOT_FOUND, new SongsList());
+        } else {
+            return new SongsResponse(Constants.SUCCESS, song);
         }
     }
 
@@ -220,6 +230,76 @@ public class SongsServiceImpl implements SongsService {
     }
 
     @Override
+    public UploadFileResponse uploadFile(UploadFileRequest uploadFileRequest, MediaType mediaType) {
+        UploadFileResponse uploadFileResponse = new UploadFileResponse();
+        MusicFiles mediaFile = null;
+
+        try {
+            if (uploadFileRequest.getId() != null && uploadFileRequest.getId() > 0) {
+                mediaFile = musicFilesRepository.findById(uploadFileRequest.getId()).orElse(null);
+            }
+
+            if (mediaFile == null) {
+                mediaFile = new MusicFiles();
+            }
+
+            mediaFile.setSongId(uploadFileRequest.getSongId());
+            mediaFile.setFileName(uploadFileRequest.getFileName());
+            mediaFile.setFileType(uploadFileRequest.getFileType());
+            mediaFile.setFileSize((long) uploadFileRequest.getFileData().length);
+
+            String filename = filepathConfig.getFileLocation() +
+                    (mediaType == MediaType.Audio ?  filepathConfig.getAudioPath() : filepathConfig.getPdfPath()) +
+                    uploadFileRequest.getFileName();
+            FileUtils.writeByteArrayToFile(new File(filename), uploadFileRequest.getFileData());
+
+            mediaFile = musicFilesRepository.saveAndFlush(mediaFile);
+
+            uploadFileResponse.setStatus(Constants.SUCCESS);
+            uploadFileResponse.setId(mediaFile.getId());
+        } catch (Exception e) {
+            uploadFileResponse.setStatus(Constants.ERROR + e.getMessage());
+            uploadFileResponse.setId(null);
+        }
+
+        return uploadFileResponse;
+    }
+
+    @Override
+    public FileResponse getSongsIndex(String songNumFrom, String songNumTo) {
+        FileResponse fileResponse = new FileResponse();
+
+        try {
+            Connection conn = Objects.requireNonNull(dataSource).getConnection();
+
+            Integer fromId = songsRepository.findIdBySongNum(songNumFrom);
+            Integer toId = songsRepository.findIdBySongNum(songNumTo);
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("startId", fromId);
+            params.put("endId", toId);
+
+            String path = ResourceUtils.getFile("classpath:report/GuitarIndex.jasper").getAbsolutePath();
+
+            JasperReport jReport = (JasperReport) JRLoader.loadObjectFromFile(path);
+            JasperPrint jPrint = JasperFillManager.fillReport(jReport, params, conn);
+
+            byte[] pdfBytes = JasperExportManager.exportReportToPdf(jPrint);
+            fileResponse.setData(pdfBytes);
+            fileResponse.setFileName("GuitarIndex.pdf");
+            fileResponse.setFileSize((long) pdfBytes.length);
+            fileResponse.setStatus(Constants.SUCCESS);
+        } catch (JRException | SQLException | IOException e) {
+            fileResponse.setStatus(Constants.ERROR + e.getMessage());
+            fileResponse.setFileName(null);
+            fileResponse.setFileSize(null);
+            fileResponse.setData(null);
+        }
+
+        return fileResponse;
+    }
+
+    @Override
     public StringListResponse listAllSongNums() {
         try {
             List<String> lstSongNums = songsRepository.listAllSongNums();
@@ -315,76 +395,6 @@ public class SongsServiceImpl implements SongsService {
         } catch (Exception e) {
             return new StringListResponse(Constants.ERROR + e.getMessage(), null, null);
         }
-    }
-
-    @Override
-    public FileResponse getSongsIndex(SongNumRange songNumRange) {
-        FileResponse fileResponse = new FileResponse();
-
-        try {
-            Connection conn = Objects.requireNonNull(dataSource).getConnection();
-
-            Integer fromId = songsRepository.findIdBySongNum(songNumRange.getSongNumFrom());
-            Integer toId = songsRepository.findIdBySongNum(songNumRange.getSongNumTo());
-
-            Map<String, Object> params = new HashMap<>();
-            params.put("startId", fromId);
-            params.put("endId", toId);
-
-            String path = ResourceUtils.getFile("classpath:report/GuitarIndex.jasper").getAbsolutePath();
-
-            JasperReport jReport = (JasperReport) JRLoader.loadObjectFromFile(path);
-            JasperPrint jPrint = JasperFillManager.fillReport(jReport, params, conn);
-
-            byte[] pdfBytes = JasperExportManager.exportReportToPdf(jPrint);
-            fileResponse.setData(pdfBytes);
-            fileResponse.setFileName("GuitarIndex.pdf");
-            fileResponse.setFileSize((long) pdfBytes.length);
-            fileResponse.setStatus(Constants.SUCCESS);
-        } catch (JRException | SQLException | IOException e) {
-            fileResponse.setStatus(Constants.ERROR + e.getMessage());
-            fileResponse.setFileName(null);
-            fileResponse.setFileSize(null);
-            fileResponse.setData(null);
-        }
-
-        return fileResponse;
-    }
-
-    @Override
-    public UploadFileResponse uploadFile(UploadFileRequest uploadFileRequest, MediaType mediaType) {
-        UploadFileResponse uploadFileResponse = new UploadFileResponse();
-        MusicFiles mediaFile = null;
-
-        try {
-            if (uploadFileRequest.getId() != null && uploadFileRequest.getId() > 0) {
-                mediaFile = musicFilesRepository.findById(uploadFileRequest.getId()).orElse(null);
-            }
-
-            if (mediaFile == null) {
-                mediaFile = new MusicFiles();
-            }
-
-            mediaFile.setSongId(uploadFileRequest.getSongId());
-            mediaFile.setFileName(uploadFileRequest.getFileName());
-            mediaFile.setFileType(uploadFileRequest.getFileType());
-            mediaFile.setFileSize((long) uploadFileRequest.getFileData().length);
-
-            String filename = filepathConfig.getFileLocation() +
-                    (mediaType == MediaType.Audio ?  filepathConfig.getAudioPath() : filepathConfig.getPdfPath()) +
-                    uploadFileRequest.getFileName();
-            FileUtils.writeByteArrayToFile(new File(filename), uploadFileRequest.getFileData());
-
-            mediaFile = musicFilesRepository.saveAndFlush(mediaFile);
-
-            uploadFileResponse.setStatus(Constants.SUCCESS);
-            uploadFileResponse.setId(mediaFile.getId());
-        } catch (Exception e) {
-            uploadFileResponse.setStatus(Constants.ERROR + e.getMessage());
-            uploadFileResponse.setId(null);
-        }
-
-        return uploadFileResponse;
     }
 
     @Override

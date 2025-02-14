@@ -1,7 +1,6 @@
 package com.bwinfoservices.guitarapis.services;
 
 import com.bwinfoservices.guitarapis.payloads.requests.SaveSongRequest;
-import com.bwinfoservices.guitarapis.payloads.requests.SongNumRange;
 import com.bwinfoservices.guitarapis.payloads.requests.UploadFileRequest;
 import com.bwinfoservices.guitarapis.payloads.responses.*;
 import com.bwinfoservices.guitarapis.commons.MediaType;
@@ -10,11 +9,17 @@ import com.bwinfoservices.guitarapis.commons.MediaType;
 public interface SongsService {
     SongsListResponse listAll();
 
+    SongsResponse findBySongId(Integer songId);
+
     SongsResponse findBySongNum(String songNum);
 
     SaveSongResponse save(SaveSongRequest saveSongRequest);
 
     FileResponse getFile(Integer songId, MediaType mediaType);
+
+    UploadFileResponse uploadFile(UploadFileRequest uploadFileRequest, MediaType mediaType);
+
+    FileResponse getSongsIndex(String songNumFrom, String songNumTo);
 
     StringListResponse listAllSongNums();
 
@@ -35,10 +40,6 @@ public interface SongsService {
     ReleaseYearResponse getReleaseYear(String albumName);
 
     StringListResponse listToSongNums(String fromSongNum);
-
-    FileResponse getSongsIndex(SongNumRange songNumRange);
-
-    UploadFileResponse uploadFile(UploadFileRequest uploadFileRequest, MediaType mediaType);
 
     ResponseMessage delete(String songNum);
 

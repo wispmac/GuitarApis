@@ -81,5 +81,38 @@ public class SongsController {
         return GetResponse.generate(response.getStatus(), response);
     }
 
+    @GetMapping("/songs/songNums")
+    public ResponseEntity<?> listSongNums() {
+        StringListResponse response = songsService.listAllSongNums();
 
+        return GetResponse.generate(response.getStatus(), response);
+    }
+
+    @GetMapping("/songs/lastSongNum")
+    public ResponseEntity<?> lastSongNum() {
+        LastSongNumResponse response = songsService.getLastSongNum();
+
+        return GetResponse.generate(response.getStatus(), response);
+    }
+
+    @GetMapping("/songs/toSongNums")
+    public ResponseEntity<?> toSongNums(@RequestParam(name = "fromSongNum") String fromSongNum) {
+        StringListResponse response = songsService.listToSongNums(fromSongNum);
+
+        return GetResponse.generate(response.getStatus(), response);
+    }
+
+    @DeleteMapping("/songs/deleteById")
+    public ResponseEntity<?> deleteById(@RequestParam(name = "songId") Integer songId) {
+        ResponseMessage response = songsService.delete(songId);
+
+        return GetResponse.generate(response.getStatus(), response);
+    }
+
+    @DeleteMapping("/songs/deleteBySongNum")
+    public ResponseEntity<?> deleteBySongNum(@RequestParam(name = "songNum") String songNum) {
+        ResponseMessage response = songsService.delete(songNum);
+
+        return GetResponse.generate(response.getStatus(), response);
+    }
 }

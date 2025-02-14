@@ -5,7 +5,6 @@ import com.bwinfoservices.guitarapis.payloads.requests.UploadFileRequest;
 import com.bwinfoservices.guitarapis.payloads.responses.*;
 import com.bwinfoservices.guitarapis.commons.MediaType;
 
-@SuppressWarnings("unused")
 public interface SongsService {
     SongsListResponse listAll();
 
@@ -23,21 +22,7 @@ public interface SongsService {
 
     StringListResponse listAllSongNums();
 
-    StringListResponse listAllAlbums();
-
-    StringListResponse listAllArtists();
-
-    IntegerListResponse listAllReleaseYears();
-
-    StringListResponse listAllComposers();
-
-    StringListResponse listAllLyricists();
-
-    StringListResponse listAllChords();
-
     LastSongNumResponse getLastSongNum();
-
-    ReleaseYearResponse getReleaseYear(String albumName);
 
     StringListResponse listToSongNums(String fromSongNum);
 

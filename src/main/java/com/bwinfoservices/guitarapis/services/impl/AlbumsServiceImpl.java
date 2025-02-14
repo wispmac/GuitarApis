@@ -2,10 +2,7 @@ package com.bwinfoservices.guitarapis.services.impl;
 
 import com.bwinfoservices.guitarapis.commons.Constants;
 import com.bwinfoservices.guitarapis.entities.Albums;
-import com.bwinfoservices.guitarapis.payloads.responses.AlbumDetailsResponse;
-import com.bwinfoservices.guitarapis.payloads.responses.AlbumsListResponse;
-import com.bwinfoservices.guitarapis.payloads.responses.ResponseMessage;
-import com.bwinfoservices.guitarapis.payloads.responses.SaveMasterResponse;
+import com.bwinfoservices.guitarapis.payloads.responses.*;
 import com.bwinfoservices.guitarapis.repositories.AlbumsRepository;
 import com.bwinfoservices.guitarapis.services.AlbumsService;
 import jakarta.transaction.Transactional;
@@ -30,6 +27,25 @@ public class AlbumsServiceImpl implements AlbumsService {
             return new AlbumsListResponse(Constants.SUCCESS, albums.size(), albums);
         } catch (Exception e) {
             return new AlbumsListResponse(Constants.ERROR + e.getMessage(), null, null);
+        }
+    }
+
+    @Override
+    public IntegerListResponse listReleaseYears() {
+        try {
+            List<Integer> lstReleaseYears = albumsRepository.listAllReleaseYears();
+            return new IntegerListResponse(Constants.SUCCESS, lstReleaseYears.size(), lstReleaseYears);
+        } catch (Exception e) {
+            return new IntegerListResponse(Constants.ERROR + e.getMessage(), null, null);
+        }
+    }
+
+    @Override
+    public ReleaseYearResponse getReleaseYear(String albumName) {
+        try {
+            return new ReleaseYearResponse(Constants.SUCCESS, albumsRepository.getReleaseYear(albumName));
+        } catch (Exception e) {
+            return new ReleaseYearResponse(Constants.ERROR + e.getMessage(), null);
         }
     }
 

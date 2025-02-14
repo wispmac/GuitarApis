@@ -1,13 +1,14 @@
 package com.bwinfoservices.guitarapis.services;
 
 import com.bwinfoservices.guitarapis.entities.Albums;
-import com.bwinfoservices.guitarapis.payloads.responses.AlbumDetailsResponse;
-import com.bwinfoservices.guitarapis.payloads.responses.AlbumsListResponse;
-import com.bwinfoservices.guitarapis.payloads.responses.ResponseMessage;
-import com.bwinfoservices.guitarapis.payloads.responses.SaveMasterResponse;
+import com.bwinfoservices.guitarapis.payloads.responses.*;
 
 public interface AlbumsService {
     AlbumsListResponse listAll();
+
+    IntegerListResponse listReleaseYears();
+
+    ReleaseYearResponse getReleaseYear(String albumName);
 
     AlbumDetailsResponse find(String albumName);
 

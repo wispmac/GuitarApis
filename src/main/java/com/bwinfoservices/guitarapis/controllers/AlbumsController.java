@@ -2,10 +2,7 @@ package com.bwinfoservices.guitarapis.controllers;
 
 import com.bwinfoservices.guitarapis.commons.GetResponse;
 import com.bwinfoservices.guitarapis.entities.Albums;
-import com.bwinfoservices.guitarapis.payloads.responses.AlbumDetailsResponse;
-import com.bwinfoservices.guitarapis.payloads.responses.AlbumsListResponse;
-import com.bwinfoservices.guitarapis.payloads.responses.ResponseMessage;
-import com.bwinfoservices.guitarapis.payloads.responses.SaveMasterResponse;
+import com.bwinfoservices.guitarapis.payloads.responses.*;
 import com.bwinfoservices.guitarapis.services.AlbumsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +18,20 @@ public class AlbumsController {
     @GetMapping("/albums")
     public ResponseEntity<?> listAlbums() {
         AlbumsListResponse response = albumsService.listAll();
+
+        return GetResponse.generate(response.getStatus(), response);
+    }
+
+    @GetMapping("/albums/allReleaseYears")
+    public ResponseEntity<?> listAllReleaseYears() {
+        IntegerListResponse response = albumsService.listReleaseYears();
+
+        return GetResponse.generate(response.getStatus(), response);
+    }
+
+    @GetMapping("/albums/releaseYear")
+    public ResponseEntity<?> getReleaseYear(@RequestParam(name = "albumName") String albumName) {
+        ReleaseYearResponse response = albumsService.getReleaseYear(albumName);
 
         return GetResponse.generate(response.getStatus(), response);
     }

@@ -310,80 +310,11 @@ public class SongsServiceImpl implements SongsService {
     }
 
     @Override
-    public StringListResponse listAllAlbums() {
-        try {
-            List<String> lstAlbums = albumsRepository.listAllAlbums();
-            return new StringListResponse(Constants.SUCCESS, lstAlbums.size(), lstAlbums);
-        } catch (Exception e) {
-            return new StringListResponse(Constants.ERROR + e.getMessage(), null, null);
-        }
-    }
-
-    @Override
-    public StringListResponse listAllArtists() {
-        try {
-            List<String> lstArtists = artistsRepository.listAllArtists();
-            return new StringListResponse(Constants.SUCCESS, lstArtists.size(), lstArtists);
-        } catch (Exception e) {
-            return new StringListResponse(Constants.ERROR + e.getMessage(), null, null);
-        }
-    }
-
-    @Override
-    public IntegerListResponse listAllReleaseYears() {
-        try {
-            List<Integer> lstReleaseYears = albumsRepository.listAllReleaseYears();
-            return new IntegerListResponse(Constants.SUCCESS, lstReleaseYears.size(), lstReleaseYears);
-        } catch (Exception e) {
-            return new IntegerListResponse(Constants.ERROR + e.getMessage(), null, null);
-        }
-    }
-
-    @Override
-    public StringListResponse listAllComposers() {
-        try {
-            List<String> lstComposers = composersRepository.listAllComposers();
-            return new StringListResponse(Constants.SUCCESS, lstComposers.size(), lstComposers);
-        } catch (Exception e) {
-            return new StringListResponse(Constants.ERROR + e.getMessage(), null, null);
-        }
-    }
-
-    @Override
-    public StringListResponse listAllLyricists() {
-        try {
-            List<String> lstLyricists = lyricistsRepository.listAllLyricists();
-            return new StringListResponse(Constants.SUCCESS, lstLyricists.size(), lstLyricists);
-        } catch (Exception e) {
-            return new StringListResponse(Constants.ERROR + e.getMessage(), null, null);
-        }
-    }
-
-    @Override
-    public StringListResponse listAllChords() {
-        try {
-            List<String> lstChords = chordsRepository.listAllChords();
-            return new StringListResponse(Constants.SUCCESS, lstChords.size(), lstChords);
-        } catch (Exception e) {
-            return new StringListResponse(Constants.ERROR + e.getMessage(), null, null);
-        }
-    }
-
-    @Override
     public LastSongNumResponse getLastSongNum() {
         try {
             return new LastSongNumResponse(Constants.SUCCESS, songsRepository.getLastSongNum());
         } catch (Exception e) {
             return new LastSongNumResponse(Constants.ERROR + e.getMessage(), null);
-        }
-    }
-
-    @Override
-    public ReleaseYearResponse getReleaseYear(String albumName) {
-        try {
-            return new ReleaseYearResponse(Constants.SUCCESS, albumsRepository.getReleaseYear(albumName));
-        } catch (Exception e) {
-            return new ReleaseYearResponse(Constants.ERROR + e.getMessage(), null);
         }
     }
 
